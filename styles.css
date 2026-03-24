@@ -12,6 +12,7 @@
   --button-text: #fff7f4;
   --led-off: #7e7e7e;
   --led-on: #57ff8d;
+  --card-bg: rgba(248, 248, 245, 0.86);
   --shadow: 0 28px 70px rgba(0, 0, 0, 0.12);
 }
 
@@ -38,15 +39,30 @@ button {
   font: inherit;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .landing {
+  width: min(100%, 1040px);
   min-height: 100vh;
   display: grid;
-  place-items: center;
-  padding: 24px;
+  justify-items: center;
+  align-content: center;
+  gap: 22px;
+  padding: 40px 24px;
 }
 
 .console {
-  width: min(92vw, 560px);
+  width: min(94vw, 620px);
   padding: 26px;
   border-radius: 36px;
   background:
@@ -281,6 +297,112 @@ button {
   border-radius: 20px;
 }
 
+.support-grid {
+  width: min(94vw, 1040px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.support-card {
+  padding: 22px 22px 20px;
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(234, 234, 229, 0.9));
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86);
+}
+
+.support-kicker,
+.wiring-label {
+  display: inline-flex;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b6b6b;
+}
+
+.support-card h2 {
+  margin: 12px 0 0;
+  font-size: clamp(1.25rem, 3vw, 1.7rem);
+  line-height: 1.06;
+}
+
+.support-copy {
+  margin: 12px 0 0;
+  color: #555;
+  line-height: 1.7;
+  font-size: 0.98rem;
+}
+
+.utility-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.utility-button {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(222, 222, 217, 0.92));
+  color: #111;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.utility-button:hover {
+  transform: translateY(-1px);
+}
+
+.utility-button:focus-visible {
+  outline: 3px solid rgba(216, 41, 32, 0.16);
+  outline-offset: 4px;
+}
+
+.utility-button.is-active {
+  background:
+    linear-gradient(180deg, rgba(243, 255, 246, 0.98), rgba(207, 236, 214, 0.92));
+}
+
+.hardware-list {
+  margin: 18px 0 0;
+  padding: 0 0 0 18px;
+  color: #282828;
+  line-height: 1.72;
+}
+
+.hardware-list li + li {
+  margin-top: 8px;
+}
+
+.wiring-note {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(225, 225, 220, 0.66));
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.wiring-note strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.96rem;
+  line-height: 1.55;
+}
+
 .mode-value {
   font-size: 0.86rem;
   font-weight: 500;
@@ -314,7 +436,18 @@ button {
   color: #97130c;
 }
 
+@media (max-width: 900px) {
+  .support-grid {
+    grid-template-columns: 1fr;
+    width: min(94vw, 620px);
+  }
+}
+
 @media (max-width: 640px) {
+  .landing {
+    gap: 16px;
+  }
+
   .console {
     padding: 18px;
     border-radius: 28px;
@@ -347,5 +480,18 @@ button {
   .button-rim::after {
     bottom: 22px;
     right: 22px;
+  }
+
+  .support-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .utility-row {
+    flex-direction: column;
+  }
+
+  .utility-button {
+    width: 100%;
   }
 }

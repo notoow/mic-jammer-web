@@ -1,12 +1,14 @@
 # mic-jammer-web
 
-`mic-jammer-web` is currently a minimal GitHub Pages landing page built around a single centered console-style toggle.
+`mic-jammer-web` is currently a GitHub Pages landing page built around a centered console-style toggle, harmless status tones, and a non-interfering hardware checklist.
 
 ## Current page
 
 - white background
 - one oversized centered military-console-inspired button
 - click-to-toggle interaction with visual state changes
+- harmless status-tone demo for UI and box-integration checks
+- hardware checklist for a safe external control box prototype
 - static GitHub Pages-friendly structure
 
 The live page is intentionally stripped down for a minimal visual presentation.
@@ -15,7 +17,7 @@ The live page is intentionally stripped down for a minimal visual presentation.
 
 - `index.html` - landing page structure
 - `styles.css` - console styling and toggle states
-- `app.js` - button toggle behavior
+- `app.js` - button toggle behavior and harmless status tones
 - `favicon.svg` - simple icon
 
 ## Local preview
@@ -41,6 +43,16 @@ For GitHub Pages deployment:
 
 ## Suggested next steps
 
-- connect the toggle state to sound, animation, or another harmless demo action if needed
+- connect the toggle state to Web Serial or Web Bluetooth for a safe LED or buzzer demo box
 - change the button label or status words
 - add a custom domain or social preview image if needed
+
+## Safety scope
+
+This repo is limited to:
+
+- interface and state-toggle behavior
+- harmless confirmation tones
+- safe control-box planning for button, LED, buzzer, and status display
+
+It does not include microphone-jamming logic, interference signals, or hardware guidance for device disruption.
