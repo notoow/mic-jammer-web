@@ -1,11 +1,12 @@
 # mic-jammer-web
 
-`mic-jammer-web` is currently a minimal GitHub Pages landing page with a single centered button.
+`mic-jammer-web` is currently a minimal GitHub Pages landing page built around a single centered console-style toggle.
 
 ## Current page
 
 - white background
-- one oversized centered red emergency-style button
+- one oversized centered military-console-inspired button
+- click-to-toggle interaction with visual state changes
 - static GitHub Pages-friendly structure
 
 The live page is intentionally stripped down for a minimal visual presentation.
@@ -13,7 +14,8 @@ The live page is intentionally stripped down for a minimal visual presentation.
 ## Files
 
 - `index.html` - landing page structure
-- `styles.css` - minimal layout and button styling
+- `styles.css` - console styling and toggle states
+- `app.js` - button toggle behavior
 - `favicon.svg` - simple icon
 
 ## Local preview
@@ -39,6 +41,6 @@ For GitHub Pages deployment:
 
 ## Suggested next steps
 
-- change the button label
-- add button interaction or destination if needed
+- connect the toggle state to sound, animation, or another harmless demo action if needed
+- change the button label or status words
 - add a custom domain or social preview image if needed
