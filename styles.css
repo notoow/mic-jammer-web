@@ -350,6 +350,7 @@ button {
   gap: 18px;
 }
 
+.path-guide,
 .system-explainer {
   width: min(94vw, 1040px);
   padding: 22px;
@@ -360,6 +361,41 @@ button {
   box-shadow:
     0 18px 40px rgba(0, 0, 0, 0.07),
     inset 0 1px 0 rgba(255, 255, 255, 0.86);
+}
+
+.path-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.path-card {
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+.path-card h3 {
+  margin: 10px 0 0;
+  font-size: 1.08rem;
+  line-height: 1.18;
+}
+
+.path-list {
+  margin: 14px 0 0;
+  padding: 0 0 0 18px;
+  color: #3f3f3f;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.path-list li + li {
+  margin-top: 8px;
 }
 
 .architecture-grid {
@@ -609,10 +645,12 @@ button {
 }
 
 @media (max-width: 900px) {
+  .path-guide,
   .system-explainer {
     width: min(94vw, 620px);
   }
 
+  .path-grid,
   .architecture-grid {
     grid-template-columns: 1fr;
   }

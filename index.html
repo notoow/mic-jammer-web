@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260325c" />
+    <link rel="stylesheet" href="./styles.css?v=20260325d" />
   </head>
   <body>
     <main class="landing">
@@ -91,6 +91,45 @@
               The normal path is: browser UI -> Web Serial or Web Bluetooth -> MCU firmware -> button, LED, buzzer. So the web app controls hardware, while the firmware runs hardware.
             </p>
           </article>
+        </div>
+      </section>
+
+      <section class="path-guide" id="path-guide" aria-label="Usage paths">
+        <div class="gallery-head">
+          <span class="support-kicker" id="path-kicker">usage paths</span>
+          <h2 id="path-main-title">Choose the setup that fits you</h2>
+          <p class="support-copy" id="path-main-copy">
+            Some people only want the GitHub Pages console. Others want a safe offline control box built from common parts. Those are different workflows, so this page explains both.
+          </p>
+        </div>
+
+        <div class="path-grid">
+          <article class="path-card">
+            <span class="architecture-label" id="path-label-1">web-only user</span>
+            <h3 id="path-title-1">Use the browser and stop there</h3>
+            <ul class="path-list">
+              <li id="path-item-1-1">Open the GitHub Pages site on any phone, tablet, or laptop.</li>
+              <li id="path-item-1-2">Use the big center button, language switch, and harmless tone check as a pure UI demo.</li>
+              <li id="path-item-1-3">You do not need to buy hardware, solder anything, or flash firmware for this path.</li>
+              <li id="path-item-1-4">This is the right option if you only want the visual concept, presentation page, or interaction prototype.</li>
+            </ul>
+          </article>
+
+          <article class="path-card">
+            <span class="architecture-label" id="path-label-2">offline builder</span>
+            <h3 id="path-title-2">Build a safe physical control box</h3>
+            <ul class="path-list">
+              <li id="path-item-2-1">Buy generic parts from AliExpress or local electronics shops such as an ESP32 dev board, a large momentary button, indicator LEDs, a small buzzer, a 5V power board, and an enclosure.</li>
+              <li id="path-item-2-2">Before ordering, match voltage, button diameter, switch type, enclosure depth, and power connector style.</li>
+              <li id="path-item-2-3">Flash separate MCU firmware with Arduino IDE or PlatformIO, because the web page itself is not what gets flashed.</li>
+              <li id="path-item-2-4">Use the hardware as a safe standalone status box, or connect it back to the browser later with Web Serial or Web Bluetooth.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="wiring-note">
+          <span class="wiring-label" id="path-note-label">sourcing note</span>
+          <strong id="path-note-copy">Useful AliExpress search terms for this safe control-box path are: ESP32 development board, 30mm momentary push button, panel indicator LED, piezo buzzer 5V, USB-C 5V module, aluminum project enclosure. This repo does not ship disruptive hardware features or firmware.</strong>
         </div>
       </section>
 
@@ -244,6 +283,6 @@
         </div>
       </section>
     </main>
-    <script src="./app.js?v=20260325c"></script>
+    <script src="./app.js?v=20260325d"></script>
   </body>
 </html>

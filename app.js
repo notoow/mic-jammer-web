@@ -8,6 +8,7 @@ const soundToggleButton = document.getElementById("sound-toggle");
 const pageTitle = document.getElementById("page-title");
 const consoleAriaPanel = document.getElementById("console-panel");
 const systemExplainer = document.getElementById("system-explainer");
+const pathGuide = document.getElementById("path-guide");
 const supportGrid = document.getElementById("support-grid");
 const hardwareGallery = document.getElementById("hardware-gallery");
 const langSwitch = document.getElementById("lang-switch");
@@ -54,6 +55,34 @@ const translations = {
         copy: "The normal path is: browser UI -> Web Serial or Web Bluetooth -> MCU firmware -> button, LED, buzzer. So the web app controls hardware, while the firmware runs hardware.",
       },
     ],
+    pathAria: "Usage paths",
+    pathKicker: "usage paths",
+    pathMainTitle: "Choose the setup that fits you",
+    pathMainCopy: "Some people only want the GitHub Pages console. Others want a safe offline control box built from common parts. Those are different workflows, so this page explains both.",
+    pathCards: [
+      {
+        label: "web-only user",
+        title: "Use the browser and stop there",
+        items: [
+          "Open the GitHub Pages site on any phone, tablet, or laptop.",
+          "Use the big center button, language switch, and harmless tone check as a pure UI demo.",
+          "You do not need to buy hardware, solder anything, or flash firmware for this path.",
+          "This is the right option if you only want the visual concept, presentation page, or interaction prototype.",
+        ],
+      },
+      {
+        label: "offline builder",
+        title: "Build a safe physical control box",
+        items: [
+          "Buy generic parts from AliExpress or local electronics shops such as an ESP32 dev board, a large momentary button, indicator LEDs, a small buzzer, a 5V power board, and an enclosure.",
+          "Before ordering, match voltage, button diameter, switch type, enclosure depth, and power connector style.",
+          "Flash separate MCU firmware with Arduino IDE or PlatformIO, because the web page itself is not what gets flashed.",
+          "Use the hardware as a safe standalone status box, or connect it back to the browser later with Web Serial or Web Bluetooth.",
+        ],
+      },
+    ],
+    pathNoteLabel: "sourcing note",
+    pathNoteCopy: "Useful AliExpress search terms for this safe control-box path are: ESP32 development board, 30mm momentary push button, panel indicator LED, piezo buzzer 5V, USB-C 5V module, aluminum project enclosure. This repo does not ship disruptive hardware features or firmware.",
     supportAria: "Support controls and hardware notes",
     audioKicker: "status audio",
     audioTitle: "Harmless tone check",
@@ -219,6 +248,35 @@ const translations = {
   },
 };
 
+translations.ko.pathAria = "사용 경로";
+translations.ko.pathKicker = "사용 경로";
+translations.ko.pathMainTitle = "나에게 맞는 구성을 고르세요";
+translations.ko.pathMainCopy = "어떤 사람은 GitHub Pages 콘솔만 필요하고, 어떤 사람은 일반 부품으로 안전한 오프라인 컨트롤 박스를 만들고 싶어 합니다. 작업 방식이 다르기 때문에 이 페이지에서 두 흐름을 모두 설명합니다.";
+translations.ko.pathCards = [
+  {
+    label: "웹 전용 사용자",
+    title: "브라우저만 사용하고 여기서 끝내기",
+    items: [
+      "폰, 태블릿, 노트북 어디서든 GitHub Pages 사이트를 열어 사용합니다.",
+      "가운데 큰 버튼, 언어 전환, 무해한 톤 체크를 순수 UI 데모로 활용합니다.",
+      "이 경로에서는 하드웨어 구매, 납땜, 펌웨어 플래시가 전혀 필요하지 않습니다.",
+      "비주얼 콘셉트, 발표용 페이지, 인터랙션 프로토타입만 원하는 경우에 가장 적합합니다.",
+    ],
+  },
+  {
+    label: "오프라인 빌더",
+    title: "안전한 물리 컨트롤 박스 만들기",
+    items: [
+      "알리익스프레스나 로컬 전자부품 상가에서 ESP32 개발 보드, 대형 모멘터리 버튼, 상태 LED, 소형 버저, 5V 전원 보드, 인클로저 같은 범용 부품을 구합니다.",
+      "주문 전에는 전압, 버튼 지름, 스위치 방식, 인클로저 깊이, 전원 커넥터 규격이 맞는지 확인합니다.",
+      "웹페이지 자체를 굽는 것이 아니므로 Arduino IDE나 PlatformIO로 별도 MCU 펌웨어를 플래시해야 합니다.",
+      "하드웨어는 안전한 독립형 상태 박스로 쓸 수 있고, 나중에 Web Serial 또는 Web Bluetooth로 브라우저와 다시 연결할 수도 있습니다.",
+    ],
+  },
+];
+translations.ko.pathNoteLabel = "구매 메모";
+translations.ko.pathNoteCopy = "이 안전한 컨트롤 박스 경로에서 알리익스프레스 검색어 예시는 ESP32 development board, 30mm momentary push button, panel indicator LED, piezo buzzer 5V, USB-C 5V module, aluminum project enclosure 입니다. 이 저장소에는 교란형 하드웨어 기능이나 펌웨어가 포함되지 않습니다.";
+
 function setText(id, value) {
   const element = document.getElementById(id);
   if (element) {
@@ -235,6 +293,7 @@ function applyLanguage(language) {
   langSwitch.setAttribute("aria-label", copy.languageGroup);
   consoleAriaPanel.setAttribute("aria-label", copy.consoleAria);
   systemExplainer.setAttribute("aria-label", copy.architectureAria);
+  pathGuide.setAttribute("aria-label", copy.pathAria);
   supportGrid.setAttribute("aria-label", copy.supportAria);
   hardwareGallery.setAttribute("aria-label", copy.galleryAria);
   toggleButton.setAttribute("aria-label", copy.toggleAria);
@@ -244,6 +303,11 @@ function applyLanguage(language) {
   setText("architecture-kicker", copy.architectureKicker);
   setText("architecture-title", copy.architectureTitle);
   setText("architecture-copy", copy.architectureCopy);
+  setText("path-kicker", copy.pathKicker);
+  setText("path-main-title", copy.pathMainTitle);
+  setText("path-main-copy", copy.pathMainCopy);
+  setText("path-note-label", copy.pathNoteLabel);
+  setText("path-note-copy", copy.pathNoteCopy);
   setText("audio-kicker", copy.audioKicker);
   setText("audio-title", copy.audioTitle);
   setText("audio-copy", copy.audioCopy);
@@ -260,6 +324,15 @@ function applyLanguage(language) {
     setText(`arch-label-${index + 1}`, card.label);
     setText(`arch-title-${index + 1}`, card.title);
     setText(`arch-copy-${index + 1}`, card.copy);
+  });
+
+  copy.pathCards.forEach((card, cardIndex) => {
+    const index = cardIndex + 1;
+    setText(`path-label-${index}`, card.label);
+    setText(`path-title-${index}`, card.title);
+    card.items.forEach((item, itemIndex) => {
+      setText(`path-item-${index}-${itemIndex + 1}`, item);
+    });
   });
 
   copy.hardwareItems.forEach((item, index) => {

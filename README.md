@@ -10,6 +10,7 @@
 - English as the default language
 - EN / KO language selector in the console
 - clear explanation of web version vs hardware version
+- separate guidance for web-only users and offline control-box builders
 - harmless status-tone demo for UI and box-integration checks
 - hardware checklist for a safe external control box prototype
 - photo hardware guide with linked reference components
@@ -74,6 +75,54 @@ If you want a physical box with a real button, LED, or buzzer, that box needs se
 The intended safe architecture is:
 
 `browser UI -> Web Serial or Web Bluetooth -> MCU firmware -> button, LED, buzzer`
+
+## Who this is for
+
+### Web-only users
+
+Choose this route if you only want the browser experience.
+
+- open the GitHub Pages site on a phone, tablet, or laptop
+- use the centered toggle, visual state changes, language switch, and harmless tone check
+- do not buy hardware unless you actually want a physical box later
+- do not flash anything, because the web app is not firmware
+
+### Offline builders
+
+Choose this route if you want a safe physical control box for local use.
+
+- buy common control-box parts from AliExpress or local electronics shops
+- treat the current web UI as a reference interface or optional companion surface
+- flash separate firmware onto an MCU such as an ESP32
+- wire only safe control outputs like a button, LED, and buzzer
+
+### AliExpress sourcing notes
+
+Use generic search terms instead of relying on one exact listing.
+
+- `ESP32 development board`
+- `30mm momentary push button`
+- `panel indicator LED`
+- `piezo buzzer 5V`
+- `USB-C 5V module`
+- `aluminum project enclosure`
+
+Before ordering, compare:
+
+- supply voltage
+- button size and mounting hole diameter
+- momentary vs latching switch type
+- enclosure depth and panel thickness
+- power connector style
+- whether you want USB serial, BLE, or both
+
+### What gets flashed
+
+Only the microcontroller firmware gets flashed.
+
+- the GitHub Pages app stays a browser app
+- the MCU firmware is what Arduino IDE or PlatformIO writes to hardware
+- the safe connection model is still `browser UI -> Web Serial or Web Bluetooth -> MCU firmware -> button, LED, buzzer`
 
 ## Safety scope
 
