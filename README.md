@@ -7,6 +7,8 @@
 - white background
 - one oversized centered military-console-inspired button
 - click-to-toggle interaction with visual state changes
+- English as the default language
+- EN / KO language selector in the console
 - harmless status-tone demo for UI and box-integration checks
 - hardware checklist for a safe external control box prototype
 - photo hardware guide with linked reference components

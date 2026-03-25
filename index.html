@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,20 +15,26 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20260325b" />
   </head>
   <body>
     <main class="landing">
-      <h1 class="sr-only">mic-jammer-web privacy console demo</h1>
-      <section class="console" data-state="off" aria-label="Privacy control panel">
+      <h1 class="sr-only" id="page-title">mic-jammer-web privacy console demo</h1>
+      <section class="console" data-state="off" id="console-panel" aria-label="Privacy control panel">
         <div class="console-top">
           <div class="plate-title">
-            <span class="plate-kicker">tactical console</span>
+            <span class="plate-kicker" id="plate-kicker">tactical console</span>
             <strong>mic-jammer-web</strong>
           </div>
-          <div class="status-box" aria-live="polite">
-            <span class="status-led" aria-hidden="true"></span>
-            <span class="status-label" id="status-label">SAFE</span>
+          <div class="console-side">
+            <div class="lang-switch" id="lang-switch" role="group" aria-label="Language selection">
+              <button class="lang-button is-active" id="lang-en" type="button" data-lang="en" aria-pressed="true">EN</button>
+              <button class="lang-button" id="lang-ko" type="button" data-lang="ko" aria-pressed="false">KO</button>
+            </div>
+            <div class="status-box" aria-live="polite">
+              <span class="status-led" aria-hidden="true"></span>
+              <span class="status-label" id="status-label">SAFE</span>
+            </div>
           </div>
         </div>
 
@@ -47,18 +53,17 @@
         </button>
 
         <div class="console-bottom">
-          <span class="mode-tag">mode</span>
+          <span class="mode-tag" id="mode-tag">mode</span>
           <span class="mode-value" id="mode-value">standby</span>
         </div>
       </section>
 
-      <section class="support-grid" aria-label="Support controls and hardware notes">
+      <section class="support-grid" id="support-grid" aria-label="Support controls and hardware notes">
         <article class="support-card">
-          <span class="support-kicker">status audio</span>
-          <h2>Harmless tone check</h2>
-          <p class="support-copy">
-            토글 시에는 짧은 상태 확인음만 재생됩니다. 재밍 신호가 아니라 UI와 외부
-            제어 박스 연결 테스트를 위한 무해한 데모 톤입니다.
+          <span class="support-kicker" id="audio-kicker">status audio</span>
+          <h2 id="audio-title">Harmless tone check</h2>
+          <p class="support-copy" id="audio-copy">
+            Only short confirmation tones are played on toggle. This is a harmless demo tone for UI and external control box testing, not an interference signal.
           </p>
           <div class="utility-row">
             <button class="utility-button" id="tone-check" type="button">Tone Check</button>
@@ -74,36 +79,33 @@
         </article>
 
         <article class="support-card">
-          <span class="support-kicker">hardware checklist</span>
-          <h2>External control box</h2>
-          <p class="support-copy">
-            아래 구성은 비간섭형 외부 제어 콘솔이나 상태 표시 박스를 바로 붙이기 위한
-            준비 항목입니다. 제어, 표시, 확인음 데모에만 초점을 둡니다.
+          <span class="support-kicker" id="hardware-kicker">hardware checklist</span>
+          <h2 id="hardware-title">External control box</h2>
+          <p class="support-copy" id="hardware-copy">
+            This checklist is for a non-interfering external control console or status box. It focuses only on control, indicators, and confirmation-tone demos.
           </p>
           <ul class="hardware-list">
-            <li>마이크로컨트롤러 1개: USB 시리얼 또는 BLE 연결용</li>
-            <li>대형 순간식 버튼 1개: 현재 페이지와 같은 물리 토글 입력용</li>
-            <li>상태 LED 1세트: safe, armed 상태 표시용</li>
-            <li>소형 버저 또는 스피커 1개: 확인음 출력용</li>
-            <li>전원 모듈 1개: USB-C 또는 5V 입력 정리용</li>
-            <li>하우징 1개: 금속 또는 견고한 ABS 패널</li>
-            <li>배선 및 브레드보드 또는 프로토보드: 빠른 프로토타입 조립용</li>
+            <li id="hardware-item-1">1 microcontroller: for USB serial or BLE connectivity</li>
+            <li id="hardware-item-2">1 large momentary button: physical toggle input matching the web UI</li>
+            <li id="hardware-item-3">1 LED set: for safe, armed, and power indicators</li>
+            <li id="hardware-item-4">1 small buzzer or speaker: for confirmation tones</li>
+            <li id="hardware-item-5">1 power module: to handle USB-C or 5V input cleanly</li>
+            <li id="hardware-item-6">1 enclosure: metal or rugged ABS front panel housing</li>
+            <li id="hardware-item-7">Wiring plus breadboard or protoboard: for quick assembly</li>
           </ul>
           <div class="wiring-note">
-            <span class="wiring-label">safe hookup</span>
+            <span class="wiring-label" id="wiring-label">safe hookup</span>
             <strong>browser -> serial or BLE -> MCU -> button, LED, buzzer</strong>
           </div>
         </article>
       </section>
 
-      <section class="hardware-gallery" aria-label="Photo hardware guide">
+      <section class="hardware-gallery" id="hardware-gallery" aria-label="Photo hardware guide">
         <div class="gallery-head">
-          <span class="support-kicker">photo hardware guide</span>
-          <h2>Safe external control box reference</h2>
-          <p class="support-copy">
-            아래 사진은 `버튼 + 상태 표시 + 확인음 + 전원 + 하우징` 중심의 외부 제어
-            박스를 꾸릴 때 참고할 수 있는 예시 부품입니다. 모두 비간섭형 데모 콘솔
-            기준으로 정리했습니다.
+          <span class="support-kicker" id="gallery-kicker">photo hardware guide</span>
+          <h2 id="gallery-title">Safe external control box reference</h2>
+          <p class="support-copy" id="gallery-copy">
+            These photo references are useful when building an external control box around buttons, status indicators, confirmation audio, power, and an enclosure. Everything here is scoped to a non-interfering demo console.
           </p>
         </div>
 
@@ -112,14 +114,15 @@
             <img
               src="https://cdn-shop.adafruit.com/970x728/5933-08.jpg"
               alt="ESP32 development board"
+              id="photo-alt-1"
               loading="lazy"
               decoding="async"
             />
             <div class="photo-copy">
-              <span class="photo-role">controller</span>
-              <h3>ESP32-class board</h3>
-              <p>브라우저와 BLE 또는 시리얼로 연결해 버튼, LED, 버저 상태를 제어하는 중심 보드.</p>
-              <a href="https://www.adafruit.com/product/5933" target="_blank" rel="noreferrer">Official source</a>
+              <span class="photo-role" id="photo-role-1">controller</span>
+              <h3 id="photo-title-1">ESP32-class board</h3>
+              <p id="photo-copy-1">The central board for controlling button, LED, and buzzer states over BLE or serial from the browser.</p>
+              <a href="https://www.adafruit.com/product/5933" target="_blank" rel="noreferrer" id="photo-link-1">Official source</a>
             </div>
           </article>
 
@@ -127,14 +130,15 @@
             <img
               src="https://cdn-shop.adafruit.com/970x728/3490-00.jpg"
               alt="Blue illuminated arcade button"
+              id="photo-alt-2"
               loading="lazy"
               decoding="async"
             />
             <div class="photo-copy">
-              <span class="photo-role">input</span>
-              <h3>30mm illuminated button</h3>
-              <p>현재 웹 UI의 중앙 토글을 실제 물리 입력으로 옮길 때 가장 직관적인 대형 버튼.</p>
-              <a href="https://www.adafruit.com/product/3490" target="_blank" rel="noreferrer">Official source</a>
+              <span class="photo-role" id="photo-role-2">input</span>
+              <h3 id="photo-title-2">30mm illuminated button</h3>
+              <p id="photo-copy-2">The most intuitive large-format physical control for matching the central toggle in the web UI.</p>
+              <a href="https://www.adafruit.com/product/3490" target="_blank" rel="noreferrer" id="photo-link-2">Official source</a>
             </div>
           </article>
 
@@ -142,14 +146,15 @@
             <img
               src="https://cdn-shop.adafruit.com/970x728/4203-01.jpg"
               alt="LED indicators wired on a breadboard"
+              id="photo-alt-3"
               loading="lazy"
               decoding="async"
             />
             <div class="photo-copy">
-              <span class="photo-role">status</span>
-              <h3>Indicator LEDs</h3>
-              <p>`safe`, `armed`, `power` 같은 상태를 패널 앞면에 바로 보여주는 가장 쉬운 출력 요소.</p>
-              <a href="https://www.adafruit.com/product/4203" target="_blank" rel="noreferrer">Official source</a>
+              <span class="photo-role" id="photo-role-3">status</span>
+              <h3 id="photo-title-3">Indicator LEDs</h3>
+              <p id="photo-copy-3">The easiest output layer for showing safe, armed, and power states right on the front panel.</p>
+              <a href="https://www.adafruit.com/product/4203" target="_blank" rel="noreferrer" id="photo-link-3">Official source</a>
             </div>
           </article>
 
@@ -157,14 +162,15 @@
             <img
               src="https://cdn-shop.adafruit.com/970x728/160-01.jpg"
               alt="Piezo buzzer"
+              id="photo-alt-4"
               loading="lazy"
               decoding="async"
             />
             <div class="photo-copy">
-              <span class="photo-role">audio</span>
-              <h3>Piezo buzzer</h3>
-              <p>지금 페이지의 확인음을 외부 박스에서도 짧고 명확하게 재생해 주는 간단한 사운드 장치.</p>
-              <a href="https://www.adafruit.com/product/160" target="_blank" rel="noreferrer">Official source</a>
+              <span class="photo-role" id="photo-role-4">audio</span>
+              <h3 id="photo-title-4">Piezo buzzer</h3>
+              <p id="photo-copy-4">A simple sound device for replaying the page confirmation tones clearly on the external box.</p>
+              <a href="https://www.adafruit.com/product/160" target="_blank" rel="noreferrer" id="photo-link-4">Official source</a>
             </div>
           </article>
 
@@ -172,14 +178,15 @@
             <img
               src="https://cdn-shop.adafruit.com/970x728/5807-04.jpg"
               alt="USB-C power delivery breakout board"
+              id="photo-alt-5"
               loading="lazy"
               decoding="async"
             />
             <div class="photo-copy">
-              <span class="photo-role">power</span>
-              <h3>USB-C power breakout</h3>
-              <p>외부 전원 입력을 안정적으로 받아 MCU와 표시 장치를 구동할 때 쓰기 좋은 전원 쪽 예시.</p>
-              <a href="https://www.adafruit.com/product/5807" target="_blank" rel="noreferrer">Official source</a>
+              <span class="photo-role" id="photo-role-5">power</span>
+              <h3 id="photo-title-5">USB-C power breakout</h3>
+              <p id="photo-copy-5">A practical power-side reference for feeding the MCU and panel indicators from an external source.</p>
+              <a href="https://www.adafruit.com/product/5807" target="_blank" rel="noreferrer" id="photo-link-5">Official source</a>
             </div>
           </article>
 
@@ -187,19 +194,20 @@
             <img
               src="https://www.hammfg.com/files/_cache/square_200/files/products/1550/1550dbk-2.jpg"
               alt="Black diecast aluminum enclosure"
+              id="photo-alt-6"
               loading="lazy"
               decoding="async"
             />
             <div class="photo-copy">
-              <span class="photo-role">housing</span>
-              <h3>Diecast aluminum enclosure</h3>
-              <p>견고한 외형과 패널 고정성을 확보하려면 이런 류의 금속 하우징이 가장 현실적인 출발점입니다.</p>
-              <a href="https://www.hammfg.com/electronics/small-case/diecast/1550" target="_blank" rel="noreferrer">Official source</a>
+              <span class="photo-role" id="photo-role-6">housing</span>
+              <h3 id="photo-title-6">Diecast aluminum enclosure</h3>
+              <p id="photo-copy-6">A realistic starting point when you want a rugged exterior and stable front-panel mounting.</p>
+              <a href="https://www.hammfg.com/electronics/small-case/diecast/1550" target="_blank" rel="noreferrer" id="photo-link-6">Official source</a>
             </div>
           </article>
         </div>
       </section>
     </main>
-    <script src="./app.js"></script>
+    <script src="./app.js?v=20260325b"></script>
   </body>
 </html>
