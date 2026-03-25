@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260325d" />
+    <link rel="stylesheet" href="./styles.css?v=20260325e" />
   </head>
   <body>
     <main class="landing">
@@ -91,6 +91,58 @@
               The normal path is: browser UI -> Web Serial or Web Bluetooth -> MCU firmware -> button, LED, buzzer. So the web app controls hardware, while the firmware runs hardware.
             </p>
           </article>
+        </div>
+      </section>
+
+      <section class="bridge-panel" id="bridge-panel" aria-label="Hardware bridge">
+        <div class="gallery-head">
+          <span class="support-kicker" id="bridge-kicker">hardware bridge</span>
+          <h2 id="bridge-title">Connect a safe ESP32 control box</h2>
+          <p class="support-copy" id="bridge-copy">
+            Use Web Serial to mirror the center toggle onto a real ESP32 box with LEDs, an active buzzer, and physical button events.
+          </p>
+        </div>
+
+        <div class="bridge-actions">
+          <button class="utility-button is-accent" id="connect-hardware" type="button">Connect Hardware</button>
+          <button class="utility-button" id="disconnect-hardware" type="button" disabled>Disconnect</button>
+          <button class="utility-button" id="refresh-hardware" type="button" disabled>Refresh Status</button>
+        </div>
+
+        <p class="bridge-hint" id="bridge-hint">
+          Works in Chromium-based desktop browsers on secure origins. Use a data-capable USB cable and open the board at 115200 baud.
+        </p>
+
+        <div class="bridge-grid">
+          <article class="bridge-metric">
+            <span class="wiring-label" id="bridge-label-support">browser</span>
+            <strong id="bridge-value-support">Web Serial ready</strong>
+          </article>
+
+          <article class="bridge-metric">
+            <span class="wiring-label" id="bridge-label-link">link</span>
+            <strong id="bridge-value-link">disconnected</strong>
+          </article>
+
+          <article class="bridge-metric">
+            <span class="wiring-label" id="bridge-label-device">box state</span>
+            <strong id="bridge-value-device">unknown</strong>
+          </article>
+
+          <article class="bridge-metric">
+            <span class="wiring-label" id="bridge-label-button">button</span>
+            <strong id="bridge-value-button">released</strong>
+          </article>
+        </div>
+
+        <div class="wiring-note">
+          <span class="wiring-label" id="bridge-event-label">latest</span>
+          <strong id="bridge-value-event">waiting for hardware</strong>
+        </div>
+
+        <div class="wiring-note">
+          <span class="wiring-label" id="bridge-pins-label">demo wiring</span>
+          <strong id="bridge-pins-copy">BTN GPIO19 -> GND, SAFE LED GPIO4, ARMED LED GPIO5, BUZZER GPIO18, common GND. An active buzzer module is the easiest option for this demo.</strong>
         </div>
       </section>
 
@@ -283,6 +335,6 @@
         </div>
       </section>
     </main>
-    <script src="./app.js?v=20260325d"></script>
+    <script src="./app.js?v=20260325e"></script>
   </body>
 </html>

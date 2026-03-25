@@ -22,7 +22,8 @@ The live page is intentionally stripped down for a minimal visual presentation.
 
 - `index.html` - landing page structure
 - `styles.css` - console styling and toggle states
-- `app.js` - button toggle behavior and harmless status tones
+- `app.js` - button toggle behavior, harmless status tones, and Web Serial hardware sync
+- `firmware/esp32-safe-console-demo.ino` - safe ESP32 demo firmware for button, LEDs, and active buzzer
 - `favicon.svg` - simple icon
 
 ## Local preview
@@ -48,9 +49,92 @@ For GitHub Pages deployment:
 
 ## Suggested next steps
 
-- connect the toggle state to Web Serial or Web Bluetooth for a safe LED or buzzer demo box
+- expand the Web Serial demo to Web Bluetooth if you want cable-free pairing later
 - change the button label or status words
 - add a custom domain or social preview image if needed
+
+## Safe hardware demo
+
+This repository now includes a working browser-to-ESP32 demo path for a safe physical control box.
+
+### What it does
+
+- the center web toggle can sync `SAFE` and `ARMED` to an ESP32 over Web Serial
+- the ESP32 can drive two LEDs and one active buzzer
+- a physical momentary button on the ESP32 box can toggle the state and report it back to the page
+- the page can request a fresh hardware status and mirror the latest device state
+
+### Hardware example
+
+Recommended safe demo parts:
+
+- 1 ESP32 development board
+- 1 large momentary button
+- 1 green or white LED for `SAFE`
+- 1 red LED for `ARMED`
+- 2 current-limiting resistors for the LEDs
+- 1 active buzzer module
+- jumper wires and a breadboard or perfboard
+- 1 USB data cable
+
+### Demo wiring
+
+Default firmware pin map:
+
+- `GPIO19` -> momentary button -> `GND`
+- `GPIO4` -> `SAFE` LED -> resistor -> `GND`
+- `GPIO5` -> `ARMED` LED -> resistor -> `GND`
+- `GPIO18` -> active buzzer signal pin
+- common `GND`
+
+Notes:
+
+- the button uses `INPUT_PULLUP`, so the pressed state is created by shorting `GPIO19` to `GND`
+- an active buzzer is preferred because the demo firmware only needs simple on/off pulses
+
+### Flashing the ESP32
+
+1. Open `firmware/esp32-safe-console-demo.ino` in Arduino IDE.
+2. Install ESP32 board support if it is not already installed.
+3. Select your ESP32 board and COM port.
+4. Upload the sketch at the default settings.
+5. Open the serial monitor at `115200` baud if you want to inspect the text protocol.
+
+### Using the web app with hardware
+
+1. Open the GitHub Pages site in Chrome or Edge desktop.
+2. Click `Connect Hardware`.
+3. Choose the ESP32 serial port from the browser picker.
+4. Press the center toggle to sync `SAFE` or `ARMED`.
+5. Press the physical button on the box to send the state back to the browser.
+
+### Serial protocol
+
+Browser commands:
+
+- `HELLO`
+- `STATUS`
+- `ARM`
+- `SAFE`
+- `TOGGLE`
+- `BEEP ARM`
+- `BEEP SAFE`
+- `BEEP CHECK`
+
+Device responses:
+
+- `HELLO SAFE_CONSOLE_DEMO`
+- `STATE SAFE BUTTON RELEASED`
+- `STATE ARMED BUTTON PRESSED`
+- `EVENT BEEP CHECK`
+
+### Browser support
+
+The hardware bridge requires:
+
+- a secure origin such as GitHub Pages or `http://localhost`
+- a Chromium-based desktop browser with Web Serial support
+- a USB data cable, not a charge-only cable
 
 ## Web vs hardware
 

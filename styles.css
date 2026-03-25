@@ -351,6 +351,7 @@ button {
 }
 
 .path-guide,
+.bridge-panel,
 .system-explainer {
   width: min(94vw, 1040px);
   padding: 22px;
@@ -361,6 +362,44 @@ button {
   box-shadow:
     0 18px 40px rgba(0, 0, 0, 0.07),
     inset 0 1px 0 rgba(255, 255, 255, 0.86);
+}
+
+.bridge-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.bridge-hint {
+  margin: 16px 0 0;
+  color: #595959;
+  line-height: 1.68;
+  font-size: 0.95rem;
+}
+
+.bridge-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.bridge-metric {
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+.bridge-metric strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
 .path-grid {
@@ -570,6 +609,15 @@ button {
   transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
 }
 
+.utility-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow:
+    0 8px 14px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
 .utility-button:hover {
   transform: translateY(-1px);
 }
@@ -582,6 +630,11 @@ button {
 .utility-button.is-active {
   background:
     linear-gradient(180deg, rgba(243, 255, 246, 0.98), rgba(207, 236, 214, 0.92));
+}
+
+.utility-button.is-accent {
+  background:
+    linear-gradient(180deg, rgba(255, 244, 243, 0.98), rgba(247, 213, 209, 0.92));
 }
 
 .hardware-list {
@@ -646,8 +699,13 @@ button {
 
 @media (max-width: 900px) {
   .path-guide,
+  .bridge-panel,
   .system-explainer {
     width: min(94vw, 620px);
+  }
+
+  .bridge-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .path-grid,
@@ -724,6 +782,14 @@ button {
 
   .utility-row {
     flex-direction: column;
+  }
+
+  .bridge-actions {
+    flex-direction: column;
+  }
+
+  .bridge-grid {
+    grid-template-columns: 1fr;
   }
 
   .utility-button {

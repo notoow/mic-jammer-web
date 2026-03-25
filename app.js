@@ -8,16 +8,32 @@ const soundToggleButton = document.getElementById("sound-toggle");
 const pageTitle = document.getElementById("page-title");
 const consoleAriaPanel = document.getElementById("console-panel");
 const systemExplainer = document.getElementById("system-explainer");
+const bridgePanel = document.getElementById("bridge-panel");
 const pathGuide = document.getElementById("path-guide");
 const supportGrid = document.getElementById("support-grid");
 const hardwareGallery = document.getElementById("hardware-gallery");
 const langSwitch = document.getElementById("lang-switch");
 const langButtons = Array.from(document.querySelectorAll(".lang-button"));
+const connectHardwareButton = document.getElementById("connect-hardware");
+const disconnectHardwareButton = document.getElementById("disconnect-hardware");
+const refreshHardwareButton = document.getElementById("refresh-hardware");
+const bridgeValueSupport = document.getElementById("bridge-value-support");
+const bridgeValueLink = document.getElementById("bridge-value-link");
+const bridgeValueDevice = document.getElementById("bridge-value-device");
+const bridgeValueButton = document.getElementById("bridge-value-button");
+const bridgeValueEvent = document.getElementById("bridge-value-event");
 
 let audioContext;
 let soundEnabled = true;
 let currentLanguage = "en";
 let isArmed = false;
+let serialPort = null;
+let serialReader = null;
+let serialWriter = null;
+let serialKeepReading = false;
+let hardwareLinkState = "disconnected";
+let hardwareDeviceState = "unknown";
+let hardwareButtonState = "released";
 
 const translations = {
   en: {
@@ -277,11 +293,158 @@ translations.ko.pathCards = [
 translations.ko.pathNoteLabel = "구매 메모";
 translations.ko.pathNoteCopy = "이 안전한 컨트롤 박스 경로에서 알리익스프레스 검색어 예시는 ESP32 development board, 30mm momentary push button, panel indicator LED, piezo buzzer 5V, USB-C 5V module, aluminum project enclosure 입니다. 이 저장소에는 교란형 하드웨어 기능이나 펌웨어가 포함되지 않습니다.";
 
+translations.en.bridge = {
+  aria: "Hardware bridge",
+  kicker: "hardware bridge",
+  title: "Connect a safe ESP32 control box",
+  copy: "Use Web Serial to mirror the center toggle onto a real ESP32 box with LEDs, an active buzzer, and physical button events.",
+  hint: "Works in Chromium-based desktop browsers on secure origins. Use a data-capable USB cable and open the board at 115200 baud.",
+  pinsLabel: "demo wiring",
+  pinsCopy: "BTN GPIO19 -> GND, SAFE LED GPIO4, ARMED LED GPIO5, BUZZER GPIO18, common GND. An active buzzer module is the easiest option for this demo.",
+  actions: {
+    connect: "Connect Hardware",
+    disconnect: "Disconnect",
+    refresh: "Refresh Status",
+  },
+  labels: {
+    support: "browser",
+    link: "link",
+    device: "box state",
+    button: "button",
+    event: "latest",
+  },
+  states: {
+    supportReady: "Web Serial ready",
+    supportMissing: "Web Serial unavailable",
+    linkDisconnected: "disconnected",
+    linkConnecting: "connecting",
+    linkConnected: "connected",
+    linkBusy: "busy",
+    deviceUnknown: "unknown",
+    deviceSafe: "safe",
+    deviceArmed: "armed",
+    buttonReleased: "released",
+    buttonPressed: "pressed",
+    eventIdle: "waiting for hardware",
+    eventPermission: "select a serial port",
+    eventHandshake: "handshake sent",
+    eventSynced: "state synced",
+    eventDisconnected: "hardware disconnected",
+    eventUnavailable: "use Chrome or Edge desktop",
+  },
+};
+translations.ko.bridge = {
+  aria: "하드웨어 브리지",
+  kicker: "하드웨어 브리지",
+  title: "안전한 ESP32 컨트롤 박스 연결",
+  copy: "Web Serial로 가운데 토글 상태를 LED, 액티브 버저, 물리 버튼 이벤트가 있는 실제 ESP32 박스와 연결합니다.",
+  hint: "보안 컨텍스트의 Chromium 계열 데스크톱 브라우저에서 동작합니다. 데이터 전송 가능한 USB 케이블을 쓰고 115200 baud로 연결하세요.",
+  pinsLabel: "데모 배선",
+  pinsCopy: "BTN GPIO19 -> GND, SAFE LED GPIO4, ARMED LED GPIO5, BUZZER GPIO18, 공통 GND. 이 데모는 액티브 버저 모듈이 가장 간단합니다.",
+  actions: {
+    connect: "하드웨어 연결",
+    disconnect: "연결 해제",
+    refresh: "상태 새로고침",
+  },
+  labels: {
+    support: "브라우저",
+    link: "연결",
+    device: "박스 상태",
+    button: "버튼",
+    event: "최신 상태",
+  },
+  states: {
+    supportReady: "Web Serial 사용 가능",
+    supportMissing: "Web Serial 사용 불가",
+    linkDisconnected: "연결 안 됨",
+    linkConnecting: "연결 중",
+    linkConnected: "연결됨",
+    linkBusy: "사용 중",
+    deviceUnknown: "알 수 없음",
+    deviceSafe: "안전",
+    deviceArmed: "활성",
+    buttonReleased: "놓음",
+    buttonPressed: "눌림",
+    eventIdle: "하드웨어 연결 대기 중",
+    eventPermission: "시리얼 포트를 선택하세요",
+    eventHandshake: "핸드셰이크 전송 완료",
+    eventSynced: "상태 동기화 완료",
+    eventDisconnected: "하드웨어 연결 해제됨",
+    eventUnavailable: "Chrome 또는 Edge 데스크톱을 사용하세요",
+  },
+};
+
 function setText(id, value) {
   const element = document.getElementById(id);
   if (element) {
     element.textContent = value;
   }
+}
+
+function getBridgeCopy() {
+  const copy = translations[currentLanguage] || translations.en;
+  return copy.bridge || translations.en.bridge;
+}
+
+function updateHardwareButtons() {
+  const isConnected = hardwareLinkState === "connected";
+  connectHardwareButton.disabled =
+    !("serial" in navigator) ||
+    hardwareLinkState === "connecting" ||
+    hardwareLinkState === "connected";
+  disconnectHardwareButton.disabled = !isConnected;
+  refreshHardwareButton.disabled = !isConnected;
+}
+
+function updateBridgeUI() {
+  const bridgeCopy = getBridgeCopy();
+  const bridgeStates = bridgeCopy.states;
+
+  bridgeValueSupport.textContent = "serial" in navigator
+    ? bridgeStates.supportReady
+    : bridgeStates.supportMissing;
+
+  const linkMap = {
+    disconnected: bridgeStates.linkDisconnected,
+    connecting: bridgeStates.linkConnecting,
+    connected: bridgeStates.linkConnected,
+    busy: bridgeStates.linkBusy,
+  };
+
+  const deviceMap = {
+    unknown: bridgeStates.deviceUnknown,
+    safe: bridgeStates.deviceSafe,
+    armed: bridgeStates.deviceArmed,
+  };
+
+  const buttonMap = {
+    released: bridgeStates.buttonReleased,
+    pressed: bridgeStates.buttonPressed,
+  };
+
+  bridgeValueLink.textContent = linkMap[hardwareLinkState] || bridgeStates.linkDisconnected;
+  bridgeValueDevice.textContent = deviceMap[hardwareDeviceState] || bridgeStates.deviceUnknown;
+  bridgeValueButton.textContent = buttonMap[hardwareButtonState] || bridgeStates.buttonReleased;
+  updateHardwareButtons();
+}
+
+function setBridgeEvent(value) {
+  bridgeValueEvent.textContent = value;
+}
+
+function setHardwareLinkState(value) {
+  hardwareLinkState = value;
+  updateBridgeUI();
+}
+
+function setHardwareDeviceState(value) {
+  hardwareDeviceState = value;
+  updateBridgeUI();
+}
+
+function setHardwareButtonState(value) {
+  hardwareButtonState = value;
+  updateBridgeUI();
 }
 
 function applyLanguage(language) {
@@ -293,6 +456,7 @@ function applyLanguage(language) {
   langSwitch.setAttribute("aria-label", copy.languageGroup);
   consoleAriaPanel.setAttribute("aria-label", copy.consoleAria);
   systemExplainer.setAttribute("aria-label", copy.architectureAria);
+  bridgePanel.setAttribute("aria-label", copy.bridge.aria);
   pathGuide.setAttribute("aria-label", copy.pathAria);
   supportGrid.setAttribute("aria-label", copy.supportAria);
   hardwareGallery.setAttribute("aria-label", copy.galleryAria);
@@ -303,6 +467,20 @@ function applyLanguage(language) {
   setText("architecture-kicker", copy.architectureKicker);
   setText("architecture-title", copy.architectureTitle);
   setText("architecture-copy", copy.architectureCopy);
+  setText("bridge-kicker", copy.bridge.kicker);
+  setText("bridge-title", copy.bridge.title);
+  setText("bridge-copy", copy.bridge.copy);
+  setText("bridge-hint", copy.bridge.hint);
+  setText("bridge-pins-label", copy.bridge.pinsLabel);
+  setText("bridge-pins-copy", copy.bridge.pinsCopy);
+  setText("connect-hardware", copy.bridge.actions.connect);
+  setText("disconnect-hardware", copy.bridge.actions.disconnect);
+  setText("refresh-hardware", copy.bridge.actions.refresh);
+  setText("bridge-label-support", copy.bridge.labels.support);
+  setText("bridge-label-link", copy.bridge.labels.link);
+  setText("bridge-label-device", copy.bridge.labels.device);
+  setText("bridge-label-button", copy.bridge.labels.button);
+  setText("bridge-event-label", copy.bridge.labels.event);
   setText("path-kicker", copy.pathKicker);
   setText("path-main-title", copy.pathMainTitle);
   setText("path-main-copy", copy.pathMainCopy);
@@ -355,6 +533,13 @@ function applyLanguage(language) {
     button.setAttribute("aria-pressed", String(button.dataset.lang === language));
   });
 
+  if (hardwareLinkState === "disconnected") {
+    setBridgeEvent(copy.bridge.states.eventIdle);
+  } else if (hardwareLinkState === "connecting") {
+    setBridgeEvent(copy.bridge.states.eventPermission);
+  }
+
+  updateBridgeUI();
   updateSoundButton();
   applyState(isArmed);
 }
@@ -441,18 +626,233 @@ function applyState(isOn) {
   buttonWord.textContent = isOn ? copy.buttonOn : copy.buttonOff;
 }
 
-toggleButton.addEventListener("click", () => {
-  const isOn = consolePanel.dataset.state !== "on";
-  applyState(isOn);
-  playStatusTone(isOn ? "on" : "off");
+async function writeHardwareLine(line) {
+  if (!serialWriter) {
+    return;
+  }
+
+  const payload = new TextEncoder().encode(`${line}\n`);
+  await serialWriter.write(payload);
+}
+
+function applyHardwareSnapshot(nextDeviceState, nextButtonState) {
+  if (nextDeviceState) {
+    setHardwareDeviceState(nextDeviceState);
+    applyState(nextDeviceState === "armed");
+  }
+
+  if (nextButtonState) {
+    setHardwareButtonState(nextButtonState);
+  }
+}
+
+function handleHardwareLine(rawLine) {
+  const line = rawLine.trim();
+  if (!line) {
+    return;
+  }
+
+  const bridgeCopy = getBridgeCopy();
+  const parts = line.split(/\s+/);
+
+  if (parts[0] === "HELLO") {
+    setHardwareLinkState("connected");
+    setBridgeEvent(`${bridgeCopy.states.eventHandshake}: ${line}`);
+    return;
+  }
+
+  if (parts[0] === "STATE") {
+    const nextDeviceState = parts[1] === "ARMED" ? "armed" : "safe";
+    const buttonIndex = parts.indexOf("BUTTON");
+    const nextButtonState =
+      buttonIndex >= 0 && parts[buttonIndex + 1] === "PRESSED" ? "pressed" : "released";
+
+    applyHardwareSnapshot(nextDeviceState, nextButtonState);
+    setBridgeEvent(`${bridgeCopy.states.eventSynced}: ${line}`);
+    return;
+  }
+
+  if (parts[0] === "EVENT" && parts[1] === "BUTTON") {
+    const nextDeviceState = parts[2] === "ARMED" ? "armed" : "safe";
+    const buttonIndex = parts.indexOf("BUTTON");
+    const nextButtonState =
+      buttonIndex >= 0 && parts[buttonIndex + 1] === "PRESSED" ? "pressed" : "released";
+
+    applyHardwareSnapshot(nextDeviceState, nextButtonState);
+    setBridgeEvent(line);
+    return;
+  }
+
+  if (parts[0] === "EVENT" && parts[1] === "BUTTON_STATE") {
+    setHardwareButtonState(parts[2] === "PRESSED" ? "pressed" : "released");
+    setBridgeEvent(line);
+    return;
+  }
+
+  if (parts[0] === "PONG") {
+    setBridgeEvent(line);
+    return;
+  }
+
+  setBridgeEvent(line);
+}
+
+async function readHardwareLoop() {
+  if (!serialReader) {
+    return;
+  }
+
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  try {
+    while (serialKeepReading) {
+      const { value, done } = await serialReader.read();
+
+      if (done) {
+        break;
+      }
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split(/\r?\n/);
+      buffer = lines.pop() || "";
+      lines.forEach(handleHardwareLine);
+    }
+
+    if (buffer.trim()) {
+      handleHardwareLine(buffer);
+    }
+  } catch (error) {
+    if (serialKeepReading) {
+      setBridgeEvent(`error: ${error.message}`);
+    }
+  } finally {
+    if (serialReader) {
+      serialReader.releaseLock();
+      serialReader = null;
+    }
+
+    if (serialKeepReading) {
+      await closeHardwareConnection(getBridgeCopy().states.eventDisconnected);
+    }
+  }
+}
+
+async function requestHardwareStatus() {
+  if (hardwareLinkState !== "connected") {
+    return;
+  }
+
+  await writeHardwareLine("STATUS");
+}
+
+async function syncHardwareState(isOn) {
+  if (hardwareLinkState !== "connected") {
+    return;
+  }
+
+  await writeHardwareLine(isOn ? "ARM" : "SAFE");
+
+  if (soundEnabled) {
+    await writeHardwareLine(isOn ? "BEEP ARM" : "BEEP SAFE");
+  }
+}
+
+async function syncHardwareToneCheck() {
+  if (hardwareLinkState !== "connected" || !soundEnabled) {
+    return;
+  }
+
+  await writeHardwareLine("BEEP CHECK");
+}
+
+async function closeHardwareConnection(reason) {
+  serialKeepReading = false;
+
+  if (serialReader) {
+    try {
+      await serialReader.cancel();
+    } catch (error) {
+      // Ignore cancellation errors while shutting down the link.
+    }
+  }
+
+  if (serialWriter) {
+    try {
+      serialWriter.releaseLock();
+    } catch (error) {
+      // Ignore release errors while shutting down the link.
+    }
+    serialWriter = null;
+  }
+
+  if (serialPort) {
+    try {
+      await serialPort.close();
+    } catch (error) {
+      // Ignore close errors while shutting down the link.
+    }
+    serialPort = null;
+  }
+
+  setHardwareLinkState("disconnected");
+  setHardwareDeviceState("unknown");
+  setHardwareButtonState("released");
+  setBridgeEvent(reason || getBridgeCopy().states.eventDisconnected);
+}
+
+async function connectHardware() {
+  if (!("serial" in navigator)) {
+    updateBridgeUI();
+    setBridgeEvent(getBridgeCopy().states.eventUnavailable);
+    return;
+  }
+
+  try {
+    setHardwareLinkState("connecting");
+    setBridgeEvent(getBridgeCopy().states.eventPermission);
+
+    serialPort = await navigator.serial.requestPort();
+    await serialPort.open({ baudRate: 115200 });
+
+    serialWriter = serialPort.writable.getWriter();
+    serialReader = serialPort.readable.getReader();
+    serialKeepReading = true;
+    setHardwareLinkState("connected");
+    setBridgeEvent(getBridgeCopy().states.eventHandshake);
+    void readHardwareLoop();
+
+    await writeHardwareLine("HELLO");
+    await requestHardwareStatus();
+  } catch (error) {
+    await closeHardwareConnection(`error: ${error.message}`);
+  }
+}
+
+toggleButton.addEventListener("click", async () => {
+  const nextState = consolePanel.dataset.state !== "on";
+  applyState(nextState);
+  playStatusTone(nextState ? "on" : "off");
+
+  try {
+    await syncHardwareState(nextState);
+  } catch (error) {
+    setBridgeEvent(`error: ${error.message}`);
+  }
 });
 
-toneCheckButton.addEventListener("click", () => {
+toneCheckButton.addEventListener("click", async () => {
   playToneSequence([
     { frequency: 440, duration: 0.09, gap: 0.03, type: "triangle", volume: 0.035 },
     { frequency: 550, duration: 0.09, gap: 0.03, type: "triangle", volume: 0.035 },
     { frequency: 660, duration: 0.12, gap: 0.02, type: "triangle", volume: 0.04 },
   ]);
+
+  try {
+    await syncHardwareToneCheck();
+  } catch (error) {
+    setBridgeEvent(`error: ${error.message}`);
+  }
 });
 
 soundToggleButton.addEventListener("click", () => {
@@ -472,5 +872,33 @@ langButtons.forEach((button) => {
   });
 });
 
+connectHardwareButton.addEventListener("click", async () => {
+  await connectHardware();
+});
+
+disconnectHardwareButton.addEventListener("click", async () => {
+  await closeHardwareConnection(getBridgeCopy().states.eventDisconnected);
+});
+
+refreshHardwareButton.addEventListener("click", async () => {
+  try {
+    setHardwareLinkState("busy");
+    await requestHardwareStatus();
+    setHardwareLinkState("connected");
+  } catch (error) {
+    setBridgeEvent(`error: ${error.message}`);
+    await closeHardwareConnection(`error: ${error.message}`);
+  }
+});
+
+if ("serial" in navigator) {
+  navigator.serial.addEventListener("disconnect", async (event) => {
+    if (serialPort && event.target === serialPort) {
+      await closeHardwareConnection(getBridgeCopy().states.eventDisconnected);
+    }
+  });
+}
+
 applyLanguage("en");
 applyState(false);
+updateBridgeUI();
