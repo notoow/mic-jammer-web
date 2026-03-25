@@ -7,6 +7,7 @@ const toneCheckButton = document.getElementById("tone-check");
 const soundToggleButton = document.getElementById("sound-toggle");
 const pageTitle = document.getElementById("page-title");
 const consoleAriaPanel = document.getElementById("console-panel");
+const systemExplainer = document.getElementById("system-explainer");
 const supportGrid = document.getElementById("support-grid");
 const hardwareGallery = document.getElementById("hardware-gallery");
 const langSwitch = document.getElementById("lang-switch");
@@ -32,6 +33,27 @@ const translations = {
     modeEngaged: "engaged",
     buttonOff: "ARM",
     buttonOn: "LIVE",
+    architectureAria: "Web and hardware architecture",
+    architectureKicker: "system architecture",
+    architectureTitle: "Web version vs hardware version",
+    architectureCopy: "This project is split into a browser UI and a separate hardware firmware layer. The web app itself is not what gets flashed onto a controller.",
+    architectureCards: [
+      {
+        label: "web version",
+        title: "Runs in the browser",
+        copy: "The GitHub Pages site is the control surface. You open it in a browser on a phone, tablet, or laptop. Nothing here is flashed directly onto ESP32 hardware.",
+      },
+      {
+        label: "hardware version",
+        title: "Needs separate firmware",
+        copy: "If you want a real button, LED, or buzzer box, that device needs its own microcontroller firmware. That firmware is what gets flashed with Arduino IDE or PlatformIO.",
+      },
+      {
+        label: "flashing and link",
+        title: "Connect the two layers",
+        copy: "The normal path is: browser UI -> Web Serial or Web Bluetooth -> MCU firmware -> button, LED, buzzer. So the web app controls hardware, while the firmware runs hardware.",
+      },
+    ],
     supportAria: "Support controls and hardware notes",
     audioKicker: "status audio",
     audioTitle: "Harmless tone check",
@@ -110,6 +132,27 @@ const translations = {
     modeEngaged: "작동",
     buttonOff: "준비",
     buttonOn: "작동",
+    architectureAria: "웹과 하드웨어 아키텍처",
+    architectureKicker: "시스템 구조",
+    architectureTitle: "웹 버전과 하드웨어 버전",
+    architectureCopy: "이 프로젝트는 브라우저 UI와 별도 하드웨어 펌웨어 레이어로 나뉩니다. 웹앱 자체를 컨트롤러에 굽는 것이 아닙니다.",
+    architectureCards: [
+      {
+        label: "웹 버전",
+        title: "브라우저에서 실행",
+        copy: "GitHub Pages 사이트가 제어 화면입니다. 휴대폰, 태블릿, 노트북 브라우저에서 열어 쓰며, 이 코드 자체를 ESP32에 바로 굽는 것은 아닙니다.",
+      },
+      {
+        label: "하드웨어 버전",
+        title: "별도 펌웨어가 필요",
+        copy: "실제 버튼, LED, 버저 박스를 만들려면 그 장치에는 별도의 마이크로컨트롤러 펌웨어가 필요합니다. 그 펌웨어를 Arduino IDE나 PlatformIO로 플래시합니다.",
+      },
+      {
+        label: "플래싱과 연결",
+        title: "두 레이어를 연결",
+        copy: "일반적인 흐름은 브라우저 UI -> Web Serial 또는 Web Bluetooth -> MCU 펌웨어 -> 버튼, LED, 버저입니다. 즉 웹앱은 제어를 맡고, 펌웨어는 하드웨어 실행을 맡습니다.",
+      },
+    ],
     supportAria: "보조 제어 및 하드웨어 안내",
     audioKicker: "상태 사운드",
     audioTitle: "무해한 톤 체크",
@@ -191,12 +234,16 @@ function applyLanguage(language) {
   pageTitle.textContent = copy.pageTitle;
   langSwitch.setAttribute("aria-label", copy.languageGroup);
   consoleAriaPanel.setAttribute("aria-label", copy.consoleAria);
+  systemExplainer.setAttribute("aria-label", copy.architectureAria);
   supportGrid.setAttribute("aria-label", copy.supportAria);
   hardwareGallery.setAttribute("aria-label", copy.galleryAria);
   toggleButton.setAttribute("aria-label", copy.toggleAria);
 
   setText("plate-kicker", copy.plateKicker);
   setText("mode-tag", copy.modeTag);
+  setText("architecture-kicker", copy.architectureKicker);
+  setText("architecture-title", copy.architectureTitle);
+  setText("architecture-copy", copy.architectureCopy);
   setText("audio-kicker", copy.audioKicker);
   setText("audio-title", copy.audioTitle);
   setText("audio-copy", copy.audioCopy);
@@ -208,6 +255,12 @@ function applyLanguage(language) {
   setText("gallery-kicker", copy.galleryKicker);
   setText("gallery-title", copy.galleryTitle);
   setText("gallery-copy", copy.galleryCopy);
+
+  copy.architectureCards.forEach((card, index) => {
+    setText(`arch-label-${index + 1}`, card.label);
+    setText(`arch-title-${index + 1}`, card.title);
+    setText(`arch-copy-${index + 1}`, card.copy);
+  });
 
   copy.hardwareItems.forEach((item, index) => {
     setText(`hardware-item-${index + 1}`, item);

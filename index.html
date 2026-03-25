@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260325b" />
+    <link rel="stylesheet" href="./styles.css?v=20260325c" />
   </head>
   <body>
     <main class="landing">
@@ -55,6 +55,42 @@
         <div class="console-bottom">
           <span class="mode-tag" id="mode-tag">mode</span>
           <span class="mode-value" id="mode-value">standby</span>
+        </div>
+      </section>
+
+      <section class="system-explainer" id="system-explainer" aria-label="Web and hardware architecture">
+        <div class="gallery-head">
+          <span class="support-kicker" id="architecture-kicker">system architecture</span>
+          <h2 id="architecture-title">Web version vs hardware version</h2>
+          <p class="support-copy" id="architecture-copy">
+            This project is split into a browser UI and a separate hardware firmware layer. The web app itself is not what gets flashed onto a controller.
+          </p>
+        </div>
+
+        <div class="architecture-grid">
+          <article class="architecture-card">
+            <span class="architecture-label" id="arch-label-1">web version</span>
+            <h3 id="arch-title-1">Runs in the browser</h3>
+            <p id="arch-copy-1">
+              The GitHub Pages site is the control surface. You open it in a browser on a phone, tablet, or laptop. Nothing here is flashed directly onto ESP32 hardware.
+            </p>
+          </article>
+
+          <article class="architecture-card">
+            <span class="architecture-label" id="arch-label-2">hardware version</span>
+            <h3 id="arch-title-2">Needs separate firmware</h3>
+            <p id="arch-copy-2">
+              If you want a real button, LED, or buzzer box, that device needs its own microcontroller firmware. That firmware is what gets flashed with Arduino IDE or PlatformIO.
+            </p>
+          </article>
+
+          <article class="architecture-card">
+            <span class="architecture-label" id="arch-label-3">flashing and link</span>
+            <h3 id="arch-title-3">Connect the two layers</h3>
+            <p id="arch-copy-3">
+              The normal path is: browser UI -> Web Serial or Web Bluetooth -> MCU firmware -> button, LED, buzzer. So the web app controls hardware, while the firmware runs hardware.
+            </p>
+          </article>
         </div>
       </section>
 
@@ -208,6 +244,6 @@
         </div>
       </section>
     </main>
-    <script src="./app.js?v=20260325b"></script>
+    <script src="./app.js?v=20260325c"></script>
   </body>
 </html>

@@ -9,6 +9,7 @@
 - click-to-toggle interaction with visual state changes
 - English as the default language
 - EN / KO language selector in the console
+- clear explanation of web version vs hardware version
 - harmless status-tone demo for UI and box-integration checks
 - hardware checklist for a safe external control box prototype
 - photo hardware guide with linked reference components
@@ -49,6 +50,30 @@ For GitHub Pages deployment:
 - connect the toggle state to Web Serial or Web Bluetooth for a safe LED or buzzer demo box
 - change the button label or status words
 - add a custom domain or social preview image if needed
+
+## Web vs hardware
+
+### Web version
+
+The current repository is a browser app.
+
+- it runs from GitHub Pages
+- it provides the UI, language switch, state toggle, and harmless tone demo
+- it does not get flashed onto an ESP32 or similar controller
+
+### Hardware version
+
+If you want a physical box with a real button, LED, or buzzer, that box needs separate firmware.
+
+- that firmware would run on a microcontroller such as an ESP32
+- that firmware is what you flash with Arduino IDE or PlatformIO
+- that firmware would handle physical inputs and outputs
+
+### Connection model
+
+The intended safe architecture is:
+
+`browser UI -> Web Serial or Web Bluetooth -> MCU firmware -> button, LED, buzzer`
 
 ## Safety scope
 
