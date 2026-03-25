@@ -9,6 +9,7 @@
 - click-to-toggle interaction with visual state changes
 - harmless status-tone demo for UI and box-integration checks
 - hardware checklist for a safe external control box prototype
+- photo hardware guide with linked reference components
 - static GitHub Pages-friendly structure
 
 The live page is intentionally stripped down for a minimal visual presentation.
